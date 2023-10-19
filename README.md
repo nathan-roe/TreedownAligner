@@ -27,6 +27,7 @@ The component currently supports react v18.x.
 - Install dependencies: ```shell ./setup.sh```
 - Run local server: `yarn start` (starts local CRA server with component wrapper in a UI workbench)
 - Build: `yarn build`
+- Electron: `yarn dev-electron`
 
 ## Basic Usage
 
