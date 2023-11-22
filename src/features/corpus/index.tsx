@@ -5,10 +5,9 @@ import { InfoOutlined, Settings } from '@mui/icons-material';
 import useDebug from 'hooks/useDebug';
 import { useAppSelector } from 'app/hooks';
 import TextSegment from 'features/textSegment';
-import Treedown from 'features/treedown';
 import CorpusSettings from 'features/corpusSettings';
 
-import { Word, Corpus, CorpusViewType, TreedownType } from 'structs';
+import { Word, Corpus, CorpusViewType } from 'structs';
 
 interface CorpusProps {
   corpusId: string | null;
@@ -31,14 +30,6 @@ const determineCorpusView = (corpus: Corpus) => {
         })}
       </Typography>
     );
-  }
-
-  if (corpus.viewType === CorpusViewType.Treedown) {
-    const syntaxCorpora = ['sbl', 'nestle1904'];
-    const treedownType = syntaxCorpora.includes(corpus.id)
-      ? TreedownType.Source
-      : TreedownType.Mapped;
-    return <Treedown corpus={corpus} treedownType={treedownType} />;
   }
 };
 

@@ -29,7 +29,6 @@ import {
   resetTextSegments,
   createLink,
   deleteLink,
-  toggleCorpusView,
   AlignmentMode,
 } from 'state/alignment.slice';
 
@@ -111,27 +110,6 @@ export const ControlPanel = (props: ControlPanelProps): ReactElement => {
         //   newFormats: string[]
         // ) => {}}
       >
-        <ToggleButton
-          value="tree"
-          disabled={!someSyntax || currentCorpusViewports.length === 0}
-          onClick={() => {
-            if (someSyntax) {
-              if (formats.includes('tree')) {
-                setFormats(formats.filter((format) => format !== 'tree'));
-              } else {
-                setFormats(formats.concat(['tree']));
-              }
-              for (const corpus of corpora) {
-                if (corpus.syntax) {
-                  dispatch(toggleCorpusView(corpus.id));
-                }
-              }
-            }
-          }}
-        >
-          <Park />
-        </ToggleButton>
-
         <ToggleButton
           value="scroll-lock"
           onClick={() => {

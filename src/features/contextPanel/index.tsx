@@ -3,10 +3,9 @@ import { Card, Stack } from '@mui/material';
 
 import { useAppSelector } from 'app/hooks';
 import useDebug from 'hooks/useDebug';
-import Treedown from 'features/treedown';
 import LinkBuilderComponent from 'features/linkBuilder';
 
-import { Corpus, TreedownType } from 'structs';
+import { Corpus } from 'structs';
 
 export const ContextPanel = (): ReactElement => {
   useDebug('ContextPanel');

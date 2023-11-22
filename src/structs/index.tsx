@@ -9,19 +9,42 @@ export enum SyntaxType {
 
 export enum CorpusViewType {
   Paragraph = 'paragraph',
-  Treedown = 'treedown',
 }
 
-export enum TreedownType {
-  Source = 'source',
-  Mapped = 'mapped',
+interface SourceText {
+  after: "",
+  case: "",
+  class: "adv",
+  degree: "",
+  domain: "069002",
+  english: "not",
+  frame: "",
+  gender: "",
+  gloss: "Not",
+  lemma: "οὐ",
+  ln: "69.3",
+  mandarin: "不",
+  mood: "",
+  morph: "PRT-N",
+  n: "n45005003001",
+  normalized: "οὐ",
+  number: "",
+  osisId: "ROM 5:3!1",
+  person: "",
+  referent: "",
+  role: "",
+  strong: "3756",
+  subjref: "",
+  tense: "",
+  text: "οὐ",
+  type: "",
+  voice: ""
 }
 
 // Linkable sub-unit of corpus
 export interface Word {
   id: string;
   corpusId: string;
-
   text: string;
   position: number;
 }
@@ -41,6 +64,13 @@ export interface Corpus {
   fullText?: string;
   viewType?: CorpusViewType;
   syntax?: SyntaxRoot;
+}
+
+export enum CorpusType {
+  SBL = 'sbl',
+  NVI = 'nvi',
+  LEB = 'leb',
+  BACK_TRANS = 'backTrans'
 }
 
 // An instance of alignment

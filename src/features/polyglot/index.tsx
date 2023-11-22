@@ -44,7 +44,6 @@ export const Polyglot = (): ReactElement => {
                 onScroll={(e) => {
                   if (scrollLock) {
                     const newScrollTop = (e.target as HTMLDivElement).scrollTop;
-                    console.log(newScrollTop);
                     corpusViewportRefs.current.forEach((ref) => {
                       ref.scrollTop = newScrollTop;
                     });

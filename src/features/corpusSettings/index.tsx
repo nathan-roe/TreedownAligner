@@ -42,7 +42,6 @@ const CorpusSettingsComponent = (props: CorpusSettingsProps) => {
           value={selectedCorpusId}
           label="Corpus"
           onChange={(event) => {
-            console.log('onChange', event.target.value);
             setSelectedCorpusId(event.target.value);
           }}
         >

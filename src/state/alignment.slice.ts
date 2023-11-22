@@ -13,7 +13,6 @@ import {
 import removeSegmentFromLink from 'helpers/removeSegmentFromLink';
 import singularizeAlignmentPolarityField from 'helpers/singularizeAlignmentPolarityField';
 import generateLinkId from 'helpers/generateLinkId';
-import syntaxMapper from 'features/treedown/syntaxMapper';
 
 export enum AlignmentMode {
   CleanSlate = 'cleanSlate', // Default mode
@@ -71,86 +70,6 @@ const findPrimaryAlignmentBySecondary = (
   }
 };
 
-const remapSyntax = (state: Draft<AlignmentState>, alignmentIndex: number) => {
-  const sourceCorpusId = state.alignments[alignmentIndex].source;
-  const targetCorpusId = state.alignments[alignmentIndex].target;
-  const sourceCorpusIndex = state.corpora.findIndex((corpus: Corpus) => {
-    return corpus.id === sourceCorpusId;
-  });
-  const targetCorpusIndex = state.corpora.findIndex((corpus: Corpus) => {
-    return corpus.id === targetCorpusId;
-  });
-
-  const sourceCorpusSyntaxType =
-    state.corpora[sourceCorpusIndex]?.syntax?._syntaxType;
-  const targetCorpusSyntaxType =
-    state.corpora[targetCorpusIndex]?.syntax?._syntaxType;
-
-  if (state.alignments[alignmentIndex].polarity.type === 'primary') {
-    if (sourceCorpusSyntaxType === SyntaxType.Mapped) {
-      const oldSyntax = state.corpora[sourceCorpusIndex].syntax;
-
-      if (oldSyntax) {
-        state.corpora[sourceCorpusIndex].syntax = syntaxMapper(
-          oldSyntax,
-          state.alignments[alignmentIndex]
-        );
-      }
-    }
-
-    if (targetCorpusSyntaxType === SyntaxType.Mapped) {
-      const oldSyntax = state.corpora[targetCorpusIndex].syntax;
-
-      if (oldSyntax) {
-        state.corpora[targetCorpusIndex].syntax = syntaxMapper(
-          oldSyntax,
-          state.alignments[alignmentIndex]
-        );
-      }
-    }
-  }
-
-  if (state.alignments[alignmentIndex].polarity.type === 'secondary') {
-    if (sourceCorpusSyntaxType === SyntaxType.MappedSecondary) {
-      const secondaryAlignment = state.alignments[alignmentIndex];
-      const oldSyntax = state.corpora[sourceCorpusIndex].syntax;
-      if (oldSyntax && secondaryAlignment) {
-        const primaryAlignment = findPrimaryAlignmentBySecondary(
-          state.alignments,
-          secondaryAlignment
-        );
-
-        if (primaryAlignment) {
-          state.corpora[sourceCorpusIndex].syntax = syntaxMapper(
-            oldSyntax,
-            primaryAlignment,
-            secondaryAlignment
-          );
-        }
-      }
-    }
-
-    if (targetCorpusSyntaxType === SyntaxType.MappedSecondary) {
-      const secondaryAlignment = state.alignments[alignmentIndex];
-      const oldSyntax = state.corpora[targetCorpusIndex].syntax;
-      if (oldSyntax && secondaryAlignment) {
-        const primaryAlignment = findPrimaryAlignmentBySecondary(
-          state.alignments,
-          secondaryAlignment
-        );
-
-        if (primaryAlignment) {
-          state.corpora[targetCorpusIndex].syntax = syntaxMapper(
-            oldSyntax,
-            primaryAlignment,
-            secondaryAlignment
-          );
-        }
-      }
-    }
-  }
-};
-
 const alignmentSlice = createSlice({
   name: 'alignment',
   initialState,
@@ -187,9 +106,6 @@ const alignmentSlice = createSlice({
             }
             return false;
           });
-          if (alignment) {
-            syntax = syntaxMapper(syntax, alignment);
-          }
         } else if (
           syntax &&
           syntax._syntaxType === SyntaxType.MappedSecondary
@@ -245,26 +161,11 @@ const alignmentSlice = createSlice({
                 `Error determining the primary alignment data for Corpus: ${corpus.id}`
               );
             }
-
-            syntax = syntaxMapper(syntax, primaryAlignment, secondaryAlignment);
           }
         }
 
         return { ...corpus, viewType };
       });
-    },
-
-    toggleCorpusView: (state, action: PayloadAction<string>) => {
-      const corpusIndex = state.corpora.findIndex(
-        (corpus) => corpus.id === action.payload
-      );
-      const oldViewType = state.corpora[corpusIndex].viewType;
-      const newViewType =
-        oldViewType === CorpusViewType.Paragraph
-          ? CorpusViewType.Treedown
-          : CorpusViewType.Paragraph;
-
-      state.corpora[corpusIndex].viewType = newViewType;
     },
 
     toggleTextSegment: (state, action: PayloadAction<Word>) => {
@@ -477,7 +378,6 @@ const alignmentSlice = createSlice({
 
         state.inProgressLink = null;
         state.mode = AlignmentMode.CleanSlate;
-        remapSyntax(state, state.alignments.indexOf(alignment));
       }
     },
     deleteLink: (state) => {
@@ -504,7 +404,6 @@ const alignmentSlice = createSlice({
             state.alignments[alignmentIndex].links.splice(linkToDeleteIndex, 1);
             state.inProgressLink = null;
             state.mode = AlignmentMode.CleanSlate;
-            remapSyntax(state, alignmentIndex);
           }
         }
       }
@@ -515,7 +414,6 @@ const alignmentSlice = createSlice({
 export const {
   loadAlignments,
   loadCorpora,
-  toggleCorpusView,
   toggleTextSegment,
   resetTextSegments,
   createLink,
